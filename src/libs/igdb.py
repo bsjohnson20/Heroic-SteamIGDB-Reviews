@@ -49,7 +49,7 @@ class IGDB(TwitchOAuth):
         super().__init__()
         log.info("Initializing IGDB")
 
-    @cachier()
+    # @cachier()
     @sleep_and_retry
     @limits(calls=4, period=1)
     def get_game_data(self, body="fields id,name,rating,category,rating_count"):
@@ -71,7 +71,7 @@ class IGDB(TwitchOAuth):
         try:
             js = json.loads(data.decode("utf-8"))[0]
             if {'id','name','rating','rating_count'}.issubset(js):
-                return Game(js["id"], js["name"], js["rating"], js["rating_count"])
+                return dict({"id" : js["id"], "name": js["name"], "rating":js["rating"], "rating_count":js["rating_count"]})
             else:
                 log.error("Missing Tags: %s" % js)
                 return None
